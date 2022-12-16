@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Completed Assessments</h3>
+<table class = "table table-sm">
+{% for a in assessments %} <!--Loop through each item in assessments-->
+<thead class = "table-light">
+    <th></th>
+    <tr>
+        <td><b>{{a.title}}</b></td> <!--Display title (in bold)-->
+    </tr>
+    <tr>
+        <td>Module Code: {{a.module_code}}</td> <!--Display module code-->
+    </tr>
+    <tr>
+        <td>Deadline: {{a.deadline.strftime('%d/%m/%Y')}}</td> <!--Display deadline with formatted Date-->
+    </tr>
+    <tr>
+        <td>{{a.description}}</td> <!--Display description-->
+    </tr>
+</thead>
+{% endfor %}
+</table>
+{% endblock %}
