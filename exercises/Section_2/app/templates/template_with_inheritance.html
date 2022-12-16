@@ -1,0 +1,7 @@
+   {% extends "base.html" %}
+   {% block content %}
+       <h1> Fruits </h1>
+        {% for f in fruits %}
+        <div><p>{{ f }}</p></div>
+        {% endfor %}
+   {% endblock %}
