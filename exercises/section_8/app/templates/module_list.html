@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Module Leader</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for module in modules %}
+    <tr>
+      <td>{{module.moduleCode}}</td>
+      <td>{{module.title}}</td>
+      <td>{{module.staff}}</td>
+      <td><a href="/module/{{module.moduleCode}}/students"><button type="button" class="btn btn-primary">View students</button></a></td>
+      <td><a href="/delete_module/{{module.moduleCode}}"><button type="button" class="btn btn-primary">Delete</button></a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

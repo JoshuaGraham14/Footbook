@@ -1,0 +1,20 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Create new Student</h1>
+  <form action="" method="post" name="create">
+      {{ form.hidden_tag() }}
+      <p>
+          Student:<br>
+          {{ form.firstname(cols='80') }}<br>
+          {{ form.surname(cols='80') }}<br>
+          {{ form.year }}<br>
+          {{ form.modules }}<br>
+          {% for error in form.year.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}<br>
+      </p>
+      <p><input type="submit" value="Create student"></p>
+  </form>
+{% endblock %}
