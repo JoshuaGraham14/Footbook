@@ -1,0 +1,78 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+	{{super()}}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome-free-5.3.1-web/css/all.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sticky_footer.css') }}">
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}" ></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='vote.js') }}" ></script>
+
+
+	{{super()}}
+{% endblock %}
+
+{% block title %} Blue Elephants {% endblock %}
+
+
+{% block content %}
+
+<body class="bg-light">
+
+	<div class="container">
+		<div class="py-5 text-center">
+			<h2>Hello, there.</h2>
+			<p class="lead">What else should Web Application Development include?</p>
+			<!-- text-center -->
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="mb-3">
+	            	{% with messages = get_flashed_messages() %}
+						{% if messages %}
+							{% for message in messages %}
+								<div class="alert alert-success">{{ message }}</div>
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
+
+					  <form  action="" method="post" role="form" name="idea">
+					  	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						{{ form.csrf }}
+						<div class="form-group">
+							<input type="text" class="form-control" id="idea" name="idea" placeholder="We should learn about blue elephants.">
+						</div>
+						<button type="submit" class="btn btn-success">Submit your idea</button>
+					</form>
+	       </div>
+	      </div>
+
+	        <br /><br />
+	        <h4>You could also vote for other people's ideas. Or your own.</h4><i>
+			<meta name="csrf-token" content="{{ csrf_token() }}">
+			{% for idea in ideas %}
+			<div class="alert alert-info ideas" role="alert">
+				{{ idea.text }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a class="vote" id="{{ idea.id }}">
+					<i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ idea.upvotes }}</span></a>
+				<a class="vote" id="{{ idea.id }}">
+					<i class="far fa-thumbs-down" id="down"></i><span id="sdown"> {{ idea.downvotes }}</span></a>
+				<br />
+				<!-- alert div -->
+			</div>
+			{% endfor %}
+
+	        <!-- row -->
+		</div>
+		<!-- container -->
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">Credit to <a href="https://fontawesome.com/license">Font Awesome</a> for the icons.</span>
+		</div>
+	</footer>
+</body>
+{% endblock %}

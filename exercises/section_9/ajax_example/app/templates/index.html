@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}" ></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='ajax_js.js') }}" ></script>
+</head>
+
+<body>
+
+	{% block content %}
+
+	<h3>How do you feel about this module? Click the best response:</h3>
+	<a id="sad">Sad.</a><br/>
+	<a id="happy">Happy.</a><br/>
+	<a id="confused">Confused.</a><br/>
+
+	<p id="response"></p>
+
+	{% endblock %}
+</body>
