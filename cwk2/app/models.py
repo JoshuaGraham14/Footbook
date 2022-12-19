@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from app import db
 
 #Assessment Database Model
@@ -8,3 +9,9 @@ class Assessment(db.Model):
     deadline = db.Column(db.DateTime) #DateTime data type
     description = db.Column(db.String(1000)) #string max char length 1000
     status = db.Column(db.Boolean) #Boolean data type
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    name = db.Column(db.String(1000))

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <ul>
+  {% for message in messages %}
+      <li>{{ message }} </li>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+<h1>Set cookie</h1>
+      <form action="/setcookie" method="POST">
+         <p><h3>Enter value</h3></p>
+         <p><input type='text' name='value'/></p>
+         <p><input type='submit' value='set'/></p>
+      </form>
+<a href="/getcookie">See cookie value</a>
+{% endblock %}
