@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3 class="mb-3">Create Assessment</h3>
+<h3 class="mb-3">Create Post</h3>
 
 <!--Centre form in screen with column width of 8-->
 <div class="container-fluid">
@@ -10,7 +10,7 @@
       <div class="col col-8">
 
 <!--Create form:-->
-<form action="" method="post" name="createAssessment">
+<form action="" method="post" name="createPost">
     {{ form.hidden_tag() }}
 
     <div class="mb-3"> <!--Bottom padding spacing-->
@@ -19,30 +19,6 @@
     {{ form.title(class_='form-control') }}
     <!--Validate input-->
     {% for error in form.title.errors %}
-      <div class="alert alert-danger" role="alert">
-        [{{ error }}]
-      </div>
-    {% endfor %}
-    </div>
-
-    <div class="mb-3"> <!--Bottom padding spacing-->
-      <label> Module Code </label>
-    <!--Load field from field-->
-    {{ form.module_code(class_='form-control') }}
-    <!--Validate input-->
-    {% for error in form.module_code.errors %}
-      <div class="alert alert-danger" role="alert">
-        [{{ error }}]
-      </div>
-    {% endfor %}
-    </div>
-
-    <div class="mb-3"> <!--Bottom padding spacing-->
-      <label> Deadline </label>
-    <!--Load field from field-->
-    {{ form.deadline(class_='form-control') }}
-    <!--Validate input-->
-    {% for error in form.deadline.errors %}
       <div class="alert alert-danger" role="alert">
         [{{ error }}]
       </div>

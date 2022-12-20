@@ -2,6 +2,10 @@
 
 {% block content %}
 <h3 class="title">
-  Welcome, {{ name }}!
+  Welcome, {{ username }}!
 </h3>
+<form action="" method="post" name="logout">
+    <!--Create 'Mark as Complete' button-->
+    <input type="submit" class="btn btn-primary" value="Logout" name = "logout">
+</form>
 {% endblock %}

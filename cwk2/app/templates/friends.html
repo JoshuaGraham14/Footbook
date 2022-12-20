@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="alert alert-success">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<h3>My Friends</h3>
+<table class = "table table-sm">
+{% for a in friends %} <!--Loop through each item in users-->
+<thead class = "table-light">
+    <th></th>
+    <tr>
+        <td><b>{{a.username}}</b></td> <!--Display title (in bold)-->
+    </tr>
+    <tr>
+        <td>Team: {{a.team}}</td> <!--Display module code-->
+    </tr>
+</thead>
+{% endfor %}
+</table>
+
+<h3>Add Friends</h3>
+<table class = "table table-sm">
+{% for a in users %} <!--Loop through each item in users-->
+<thead class = "table-light">
+    <th></th>
+    <tr>
+        <td><b>{{a.username}}</b></td> <!--Display title (in bold)-->
+    </tr>
+    <tr>
+        <td>Team: {{a.team}}</td> <!--Display module code-->
+    </tr>
+    <tr>
+        <td>
+            <!--Create form-->
+            <form action="" method="post" name="addFriend{{a.id}}">
+                <!--Create 'Mark as Complete' button-->
+                <input type="submit" class="btn btn-primary" value="Add Friend" name = "{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+            </form>
+        </td>
+    </tr>
+</thead>
+{% endfor %}
+</table>
+{% endblock %}

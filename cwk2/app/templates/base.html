@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
-    <!-- <link rel="stylesheet" href="/static/styles.css"> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='like.js') }}" ></script>
   </head>
 
   <body>
@@ -18,19 +17,15 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link" href="/">All Assessments<span class="sr-only">(current)</span></a></li>
-          <li class="nav-item"><a class="nav-link" href="/createAssessment">Create Assessment</a></li>
-          <li class="nav-item"><a class="nav-link" href="/completedAssessments">Completed Assessments</a></li>
-          <li class="nav-item"><a class="nav-link" href="/uncompleteAssessments">Uncomplete Assessments</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">Feed<span class="sr-only">(current)</span></a></li>
           {% if current_user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="/createPost">Create Post</a></li>
+          <li class="nav-item"><a class="nav-link" href="/friends">Friends</a></li>
           <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
           {% endif %}
           {% if not current_user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
           <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
-          {% endif %}
-          {% if current_user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
           {% endif %}
         </ul>
       </div>
@@ -40,15 +35,6 @@
       <div class="row"> 
         <div class="col col-1"></div>
           <div class="col col-12"> <!-- Set row width to %100-->
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-success">
-                     {{ message }}
-                </div>
-                {% endfor %}
-              {% endif %}
-            {% endwith %}
             {% block content %}{% endblock %}
           </div>
         </div>

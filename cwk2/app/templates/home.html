@@ -1,32 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3>All Assessments</h3>
-<table class = "table table-sm"">
-{% for a in assessments %} <!--Loop through each item in assessments-->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="alert alert-success">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<h3>Feed</h3>
+<div class="btn-group">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Filter by
+    </button>
+    <div class="dropdown-menu">
+        <li><a class="dropdown-item" href="/filter">Action</a></li>
+        <button class="dropdown-item" type="button">All</button>
+        <button class="dropdown-item" type="button">My Friends Only</button>
+        <button class="dropdown-item" type="button">My Team Only</button>
+    </div>
+</div>
+
+<table class = "table table-sm">
+{% for post in posts %} <!--Loop through each item in posts-->
 <thead class = "table-light">
     <th></th>
     <tr>
-        <td><b>{{a.title}}</b></td> <!--Display title (in bold)-->
+        <td><b>{{post.title}}</b></td> <!--Display title (in bold)-->
     </tr>
     <tr>
-        <td>Module Code: {{a.module_code}}</td> <!--Display module code-->
+        <td>{{post.description}}</td> <!--Display description-->
     </tr>
     <tr>
-        <td>Deadline: {{a.deadline.strftime('%d/%m/%Y')}}</td> <!--Display deadline with formatted Date-->
-    </tr>
-    <!--Display status-->
-    <tr>
-        <!--If status is False -> display 'Uncomplete'-->
-        {% if a.status == False %}
-            <td>Status: Uncomplete</td>    
-        <!--Else status is True -> display 'Complete'-->
-        {% else %}
-            <td>Status: Complete</td>    
-        {% endif %}
+        <td>{{post.user.username}} - {{post.user.team}}</td> <!--Display description-->
     </tr>
     <tr>
-        <td>{{a.description}}</td> <!--Display description-->
+        <td>
+            {% if post not in likedHistory %}
+            <button class="btn btn-secondary" name="like" value={{post.id}} id=like{{post.id}}>Likes: {{(post.likes| length)}}</button>
+            {% else %}
+            <button class="btn btn-success" name="like" value={{post.id}} id=like{{post.id}}>Likes: {{(post.likes| length)}}</button>
+            {% endif %}
+
+            {% if post not in dislikedHistory %}
+            <button class="btn btn-secondary" name="dislike" value={{post.id}} id=dislike{{post.id}}>Dislikes: {{(post.dislikes| length)}}</button>
+            {% else %}
+            <button class="btn btn-danger" name="dislike" value={{post.id}} id=dislike{{post.id}}>Dislikes: {{(post.dislikes| length)}}</button>
+            {% endif %}
+        </td>
     </tr>
 </thead>
 {% endfor %}
