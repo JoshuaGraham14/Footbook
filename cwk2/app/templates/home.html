@@ -9,16 +9,15 @@
 {% endif %}
 {% endwith %}
 
-<h3>Feed</h3>
+<h3>Your Feed</h3>
 <div class="btn-group">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Filter by
+    <button class="btn btn-primary dropdown-toggle" id="dropdownbutton-head" value=0 type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {{filterSelectionText}}
     </button>
     <div class="dropdown-menu">
-        <li><a class="dropdown-item" href="/filter">Action</a></li>
-        <button class="dropdown-item" type="button">All</button>
-        <button class="dropdown-item" type="button">My Friends Only</button>
-        <button class="dropdown-item" type="button">My Team Only</button>
+        <button class="dropdown-item" id="dropdownbutton" value=1 type="button">All</button>
+        <button class="dropdown-item" id="dropdownbutton" value=2 type="button">My Friends Only</button>
+        <button class="dropdown-item" id="dropdownbutton" value=3 type="button">My Team Only</button>
     </div>
 </div>
 
@@ -33,20 +32,24 @@
         <td>{{post.description}}</td> <!--Display description-->
     </tr>
     <tr>
-        <td>{{post.user.username}} - {{post.user.team}}</td> <!--Display description-->
+        {% if post.user != current_user %}
+        <td>~ <a href="https://www.w3schools.com">{{post.user.username}}</a> - {{post.user.team}}</td> <!--Display description-->
+        {% else %}
+        <td>~ Me - {{post.user.team}}</td> <!--Display description-->
+        {% endif %}
     </tr>
     <tr>
         <td>
-            {% if post not in likedHistory %}
-            <button class="btn btn-secondary" name="like" value={{post.id}} id=like{{post.id}}>Likes: {{(post.likes| length)}}</button>
+            {% if post not in current_user.liked %}
+            <button class="btn btn-light" name="like" value={{post.id}} id=like{{post.id}}><i class="far fa-thumbs-up"></i> {{(post.likes| length)}} </button>
             {% else %}
-            <button class="btn btn-success" name="like" value={{post.id}} id=like{{post.id}}>Likes: {{(post.likes| length)}}</button>
+            <button class="btn btn-success" name="like" value={{post.id}} id=like{{post.id}}><i class="far fa-thumbs-up"></i> {{(post.likes| length)}} </button>
             {% endif %}
 
-            {% if post not in dislikedHistory %}
-            <button class="btn btn-secondary" name="dislike" value={{post.id}} id=dislike{{post.id}}>Dislikes: {{(post.dislikes| length)}}</button>
+            {% if post not in current_user.disliked %}
+            <button class="btn btn-light" name="dislike" value={{post.id}} id=dislike{{post.id}}><i class="far fa-thumbs-down"></i> {{(post.dislikes| length)}} </button>
             {% else %}
-            <button class="btn btn-danger" name="dislike" value={{post.id}} id=dislike{{post.id}}>Dislikes: {{(post.dislikes| length)}}</button>
+            <button class="btn btn-danger" name="dislike" value={{post.id}} id=dislike{{post.id}}><i class="far fa-thumbs-down"></i> {{(post.dislikes| length)}} </button>
             {% endif %}
         </td>
     </tr>

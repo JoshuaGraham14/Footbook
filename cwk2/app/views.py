@@ -13,36 +13,66 @@ admin.add_view(ModelView(models.Post, db.session))
 teams=["Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion", "Chelsea", "Crystal Palace",
 "Everton", "Fulham", "Leeds United", "Leicester City", "Liverpool", "Manchester City", "Manchester United",
 "Newcastle United", "Nottingham Forest", "Southampton", "Tottenham Hotspur", "West Ham United", "Wolverhampton Wanderers"]
+filterSelection=0
+filterSelectionText="Filter by"
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     #clearDatabase() #<--Code to clear database (keep commented)
+    global filterSelection
+    global filterSelectionText
 
-    if request.method == 'POST':
-        print("Filter!!!")
-    
-    #Retrieve all posts from the database
+    print("filterSelection:",filterSelection, " filterSelectionText:",filterSelectionText)
+
     posts = models.Post.query.all()
-    friends_posts = []
-    for post in posts:
-        if(current_user in post.user.friends or current_user == post.user):
-            friends_posts.append(post)
-            print(post)
-        for like in post.likes:
-            print(like)
+    if(filterSelection==1):
+        # filterSelectionText = "All "
+        posts = models.Post.query.all()
+    elif(filterSelection==2):
+        posts = models.Post.query.all()
+        friends = current_user.friends
+        friends_posts = []
+        for post in posts:
+            if(current_user in post.user.friends):
+                friends_posts.append(post)
+        posts=friends_posts
+    elif(filterSelection==3):
+        posts = models.Post.query.all()
+        team_posts = []
+        for post in posts:
+            if(current_user.team in post.user.team):
+                team_posts.append(post)
+        posts=team_posts
 
+    print("posts:", posts)
     print("likes", current_user.liked)
     print("dislikes", current_user.disliked)
+    print(posts, current_user.liked, current_user.disliked, filterSelection)
+    for post in posts:
+        print(post.user)
     
-    return render_template('home.html', posts=friends_posts, likedHistory=current_user.liked, dislikedHistory=current_user.disliked)
+    print("HOME LOADEDDDDD 22222")
+    return render_template('home.html', posts=posts, current_user=current_user, filterSelectionText=filterSelectionText)
 
 @app.route("/filter", methods=["POST"])
 def filter():
+    global filterSelection
+    global filterSelectionText
+    
     if request.method == 'POST':
         print("FILTEREDDDDDDDDDDD!!!")
-        
-    return "a"
+        selection_id = request.headers["Id"]
+        if(selection_id=="1"):
+            filterSelection=1
+            filterSelectionText="All "
+        elif(selection_id=="2"):
+            filterSelection=2
+            filterSelectionText="My Friends Only "
+        else:
+            filterSelection=3
+            filterSelectionText="My Team Only "
+        return redirect(url_for('home'))
 
 @app.route("/like", methods=["POST"])
 def like():
@@ -103,8 +133,15 @@ def dislike():
 def profile():
     if request.method == 'POST':
         logout_user()
+        global filterSelection
+        global filterSelectionText
+        filterSelection=0
+        filterSelectionText="Filter by"
         return redirect(url_for('home'))
-    return render_template('profile.html', username=current_user.username)
+    
+    posts = models.Post.query.filter_by(user=current_user)
+
+    return render_template('profile.html', username=current_user.username, posts=posts, likedHistory=current_user.liked, dislikedHistory=current_user.disliked)
 
 @app.route('/login')
 def login():
@@ -127,7 +164,7 @@ def login_post():
 
     login_user(user, remember=remember)
     # if the above check passes, then we know the user has the right credentials
-    return redirect(url_for('profile'))
+    return redirect(url_for('home'))
 
 @app.route('/signup')
 def signup():
@@ -183,26 +220,26 @@ def friends():
     for i in friends:
         users2.append(i)
     final_users = list(set(users) - set(users2))
-    
+
     if request.method == 'POST': #If a POST request has been sent, i.e. a 'Mark as Completed' button has been pressed:
         key = list(request.form.keys())[0] #retrieve the key from the request Dict (the ID of the button which was clicked)
-        friendAdded = models.User.query.get(int(key)) #Query this ID
+        code=key[0]
+        user_id=key[1:]
+        if(code == "r"):
+            friendRemoved = models.User.query.get(int(user_id)) #Query this ID
+            print("friendRemoved:",friendRemoved)
+            current_user.friends.remove(friendRemoved)
+            friendRemoved.friends.remove(current_user)
+            flash('Succesfully removed friend') #Display a success message
+        elif(code == "a"):
+            friendAdded = models.User.query.get(int(user_id)) #Query this ID
+            print("friendAdded:",friendAdded)
+            current_user.friends.append(friendAdded)
+            friendAdded.friends.append(current_user)
+            flash('Succesfully added new friend') #Display a success message
 
-        current_user.friends.append(friendAdded)
-        friendAdded.friends.append(current_user)
-
-        # p = models.Friends()
-        # db.session.add(p)
-        # # a.status = True #Set the status of this column to be True
         db.session.commit() #Commit changes
 
-        # #Again, retrieve all posts from the database where the 'status' column has been set to False
-        # friends = models.Friends.query.all()
-        # print(friends)
-        # if(not assessments): #IF no uncompleted assessments were found, redirect to home page:
-        #     return redirect(url_for('home'))
-        # else: #ELSE refresh the uncompleteAssessments page:
-        flash('Succesfully added new friend') #Display a success message
         return redirect(url_for('friends'))
 
     #Render the uncompleteAssessments.html template

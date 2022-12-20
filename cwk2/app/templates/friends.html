@@ -20,6 +20,15 @@
     <tr>
         <td>Team: {{a.team}}</td> <!--Display module code-->
     </tr>
+    <tr>
+        <td>
+            <!--Create form-->
+            <form action="" method="post" name="removeFriend{{a.id}}">
+                <!--Create 'Mark as Complete' button-->
+                <input type="submit" class="btn btn-secondary" value="Remove Friend" name="r{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+            </form>
+        </td>
+    </tr>
 </thead>
 {% endfor %}
 </table>
@@ -40,7 +49,7 @@
             <!--Create form-->
             <form action="" method="post" name="addFriend{{a.id}}">
                 <!--Create 'Mark as Complete' button-->
-                <input type="submit" class="btn btn-primary" value="Add Friend" name = "{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+                <input type="submit" class="btn btn-primary" value="Add Friend" name="a{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
             </form>
         </td>
     </tr>

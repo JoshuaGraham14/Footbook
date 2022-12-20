@@ -25,7 +25,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(1000), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     team = db.Column(db.String(1000), nullable=False)
-    posts = db.relationship('Post', backref='user', lazy=True)
+    posts = db.relationship('Post', backref='user', lazy='joined')
     friends =  db.relationship(
                     'User',secondary=Friends,
                     primaryjoin=Friends.c.user_id1==id,
