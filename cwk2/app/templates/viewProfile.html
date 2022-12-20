@@ -2,15 +2,13 @@
 
 {% block content %}
 <h3 class="title">
-  Welcome, {{ username }}!
+  {{ user.username }}'s profile
 </h3>
-<form action="" method="post" name="logout">
-    <!--Create 'Mark as Complete' button-->
-    <input type="submit" class="btn btn-primary" value="Logout" name = "logout">
-</form>
+
+<h6>Favorite Team: {{ user.team }}<h6>
 
 <br></br>
-<h3>Your Recent Posts</h3>
+<h3>Recent Posts</h3>
 
 <table class = "table table-sm">
     {% for post in posts %} <!--Loop through each item in posts-->

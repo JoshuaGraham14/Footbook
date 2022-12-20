@@ -33,7 +33,7 @@
     </tr>
     <tr>
         {% if post.user != current_user %}
-        <td>~ <a href="https://www.w3schools.com">{{post.user.username}}</a> - {{post.user.team}}</td> <!--Display description-->
+        <td>~ <a href="/viewProfile/{{post.user.username}}">{{post.user.username}}</a> - {{post.user.team}}</td> <!--Display description-->
         {% else %}
         <td>~ Me - {{post.user.team}}</td> <!--Display description-->
         {% endif %}

@@ -141,7 +141,7 @@ def profile():
     
     posts = models.Post.query.filter_by(user=current_user)
 
-    return render_template('profile.html', username=current_user.username, posts=posts, likedHistory=current_user.liked, dislikedHistory=current_user.disliked)
+    return render_template('profile.html', username=current_user.username, posts=posts)
 
 @app.route('/login')
 def login():
@@ -250,3 +250,8 @@ def clearDatabase():
     models.Post.query.delete()
     models.User.query.delete()
     db.session.commit()
+
+@app.route('/viewProfile/<username>')
+def viewProfile(username):
+    user = models.User.query.filter(models.User.username == username).first() #Query this ID
+    return render_template('viewProfile.html', user=user, posts=user.posts)
