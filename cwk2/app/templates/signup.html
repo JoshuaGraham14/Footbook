@@ -5,10 +5,99 @@
 {% with messages = get_flashed_messages() %}
 {% if messages %}
     <div class="alert alert-danger">
-        {{ messages[0] }}. Go to <a href="{{ url_for('login') }}">login page</a>.
+        {{ messages[0] }}
     </div>
 {% endif %}
 {% endwith %}
+
+<h3 class="mb-3">Sign up</h3>
+
+<!--Centre form in screen with column width of 8-->
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col col-6"></div>
+      <div class="col col-8">
+
+<!--Create form:-->
+<form action="" method="post" name="signup">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3"> <!--Bottom padding spacing-->
+      <label> Email </label>
+    <!--Load field from field-->
+    {{ form.email(class_='form-control') }}
+    <!--Validate input-->
+    {% for error in form.email.errors %}
+      <div class="alert alert-danger" role="alert">
+        [{{ error }}]
+      </div>
+    {% endfor %}
+    </div>
+    
+    <div class="mb-3"> <!--Bottom padding spacing-->
+        <label> Username </label>
+      <!--Load field from field-->
+      {{ form.username(class_='form-control') }}
+      <!--Validate input-->
+      {% for error in form.username.errors %}
+        <div class="alert alert-danger" role="alert">
+          [{{ error }}]
+        </div>
+      {% endfor %}
+      </div>
+
+      <div class="mb-3"> <!--Bottom padding spacing-->
+        <label> Team </label>
+      <!--Load field from field-->
+      {{ form.team(class_='form-control') }}
+      <!--Validate input-->
+      {% for error in form.team.errors %}
+        <div class="alert alert-danger" role="alert">
+          [{{ error }}]
+        </div>
+      {% endfor %}
+      </div>
+
+    <div class="mb-3"> <!--Bottom padding spacing-->
+      <label> Password </label>
+    <!--Load field from field-->
+    {{ form.password(class_='form-control') }}
+    <!--Validate input-->
+    {% for error in form.password.errors %}
+      <div class="alert alert-danger" role="alert">
+        [{{ error }}]
+      </div>
+    {% endfor %}
+    </div>
+
+    <div class="mb-3"> <!--Bottom padding spacing-->
+        <label> Password Confirm</label>
+      <!--Load field from field-->
+      {{ form.passwordConfirm(class_='form-control') }}
+      <!--Validate input-->
+      {% for error in form.passwordConfirm.errors %}
+        <div class="alert alert-danger" role="alert">
+          [{{ error }}]
+        </div>
+      {% endfor %}
+      </div>
+    
+    <div class="mb-3"></div> <!--Bottom padding spacing-->
+      <!--Submit Button-->
+      <input type="submit" class="btn btn-primary" value="Sign Up">
+  </div>
+</form>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
 <div class="column is-4 is-offset-4">
     <h3 class="title">Sign Up</h3>
     <div class="box">
@@ -24,13 +113,6 @@
                     <input class="input is-large" type="text" name="username" placeholder="Username" autofocus="">
                 </div>
             </div>
-
-            <select class="form-select" name="team" aria-label="Default select example">
-                <option selected>Select a team</option>
-                {% for i in range(teamNames| length) %} <!--Loop through each item in posts-->
-                    <option value={{i}}>{{teamNames[i]}}</option>
-                {% endfor %}
-            </select>
 
             <div class="field">
                 <div class="control">

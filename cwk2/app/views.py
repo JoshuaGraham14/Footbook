@@ -1,18 +1,18 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db, admin, models
 import datetime
-from .forms import CreatePostForm
+from .forms import CreatePostForm, LoginForm, SignupForm, teams
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin.contrib.sqla import ModelView
 import json
+import logging
 
 admin.add_view(ModelView(models.User, db.session))
 admin.add_view(ModelView(models.Post, db.session))
 
-teams=["Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Albion", "Chelsea", "Crystal Palace",
-"Everton", "Fulham", "Leeds United", "Leicester City", "Liverpool", "Manchester City", "Manchester United",
-"Newcastle United", "Nottingham Forest", "Southampton", "Tottenham Hotspur", "West Ham United", "Wolverhampton Wanderers"]
+app.logger.info('index route request')
+
 filterSelection=0
 filterSelectionText="Filter by"
 
@@ -20,14 +20,17 @@ filterSelectionText="Filter by"
 @login_required
 def home():
     #clearDatabase() #<--Code to clear database (keep commented)
+    # x={k: v for k, v in enumerate(teams)}
+    # print(x)
+
+    app.logger.info('Home Page')
     global filterSelection
     global filterSelectionText
 
-    print("filterSelection:",filterSelection, " filterSelectionText:",filterSelectionText)
+    # print("filterSelection:",filterSelection, " filterSelectionText:",filterSelectionText)
 
     posts = models.Post.query.all()
     if(filterSelection==1):
-        # filterSelectionText = "All "
         posts = models.Post.query.all()
     elif(filterSelection==2):
         posts = models.Post.query.all()
@@ -44,15 +47,15 @@ def home():
             if(current_user.team in post.user.team):
                 team_posts.append(post)
         posts=team_posts
+    app.logger.info('selected filter: "%s"', filterSelectionText)
 
-    print("posts:", posts)
-    print("likes", current_user.liked)
-    print("dislikes", current_user.disliked)
-    print(posts, current_user.liked, current_user.disliked, filterSelection)
-    for post in posts:
-        print(post.user)
+    # print("posts:", posts)
+    # print("likes", current_user.liked)
+    # print("dislikes", current_user.disliked)
+    # print(posts, current_user.liked, current_user.disliked, filterSelection)
+    # for post in posts:
+    #     print(post.user)
     
-    print("HOME LOADEDDDDD 22222")
     return render_template('home.html', posts=posts, current_user=current_user, filterSelectionText=filterSelectionText)
 
 @app.route("/filter", methods=["POST"])
@@ -61,7 +64,7 @@ def filter():
     global filterSelectionText
     
     if request.method == 'POST':
-        print("FILTEREDDDDDDDDDDD!!!")
+        app.logger.info('Filter Selected')
         selection_id = request.headers["Id"]
         if(selection_id=="1"):
             filterSelection=1
@@ -79,21 +82,22 @@ def like():
     code=""
     if request.method == 'POST': #If a POST request has been sent, i.e. a 'Mark as Completed' button has been pressed:
         like_id = request.headers["Id"]
-        print("like_id", like_id)
+        # print("like_id", like_id)
 
     current_post = models.Post.query.get(like_id)
+    app.logger.info('Post (%s) Was Liked', current_post.id)
     if (current_user not in [i for i in current_post.likes]):
         current_post.likes.append(current_user)
-        print("current_post.likes", current_post.likes)
+        # print("current_post.likes", current_post.likes)
         code="a"
         if (current_user in [i for i in current_post.dislikes]):
             current_post.dislikes.remove(current_user)
             numOfDislikes = len(current_post.dislikes)
-            print("numOfDislikes", numOfDislikes)
+            # print("numOfDislikes", numOfDislikes)
             code="s"+str(numOfDislikes)
     else:
         current_post.likes.remove(current_user)
-        print("current_post.likes", current_post.likes)
+        # print("current_post.likes", current_post.likes)
         code="r"
 
     numOfLikes = len(current_post.likes)
@@ -106,21 +110,22 @@ def dislike():
     code=""
     if request.method == 'POST': #If a POST request has been sent, i.e. a 'Mark as Completed' button has been pressed:
         dislike_id = request.headers["Id"]
-        print("dislike_id", dislike_id)
+        # print("dislike_id", dislike_id)
 
     current_post = models.Post.query.get(dislike_id)
+    app.logger.info('Post (%s) Was Disliked', current_post.id)
     if (current_user not in [i for i in current_post.dislikes]):
         current_post.dislikes.append(current_user)
-        print("current_post.dislikes", current_post.dislikes)
+        # print("current_post.dislikes", current_post.dislikes)
         code="a"
         if (current_user in [i for i in current_post.likes]):
             current_post.likes.remove(current_user)
             numOfLikes = len(current_post.likes)
-            print("numOfLikes", numOfLikes)
+            # print("numOfLikes", numOfLikes)
             code="s"+str(numOfLikes)
     else:
         current_post.dislikes.remove(current_user)
-        print("current_post.dislikes", current_post.dislikes)
+        # print("current_post.dislikes", current_post.dislikes)
         code="r"
     
     numOfDislikes = len(current_post.dislikes)
@@ -132,6 +137,7 @@ def dislike():
 @login_required
 def profile():
     if request.method == 'POST':
+        app.logger.info('User logged out')
         logout_user()
         global filterSelection
         global filterSelectionText
@@ -143,56 +149,66 @@ def profile():
 
     return render_template('profile.html', username=current_user.username, posts=posts)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = LoginForm() #create the CreatePost form
+    if form.validate_on_submit(): #IF the form was submitted successfully:
+        #Upload the data from the form to the database
+        email=form.email.data
+        password = form.password.data
+        remember = form.remember.data
 
-@app.route('/login', methods=['POST'])
-def login_post():
-    # login code goes here
-    email = request.form.get('email')
-    password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
+        user = models.User.query.filter_by(email=email).first()
 
-    user = models.User.query.filter_by(email=email).first()
+        # check if the user actually exists
+        # take the user-supplied password, hash it, and compare it to the hashed password in the database
+        if not user or not check_password_hash(user.password, password):
+            flash('Please check your login details and try again.')
+            app.logger.warning('Login details incorrect')
+            return redirect(url_for('login')) # if the user doesn't exist or password is wrong, reload the page
 
-    # check if the user actually exists
-    # take the user-supplied password, hash it, and compare it to the hashed password in the database
-    if not user or not check_password_hash(user.password, password):
-        flash('Please check your login details and try again.')
-        return redirect(url_for('login')) # if the user doesn't exist or password is wrong, reload the page
+        login_user(user, remember=remember)
+        app.logger.info('%s logged in successfully', user.username)
+        flash('Logged in successfully')
+        return redirect(url_for('home'))
 
-    login_user(user, remember=remember)
-    # if the above check passes, then we know the user has the right credentials
-    return redirect(url_for('home'))
+        # if the above check passes, then we know the user has the right credentials
+    return render_template('login.html', title='login', form=form)
 
-@app.route('/signup')
+# @app.route('/signup')
+# def signup():
+#     return render_template('signup.html', teamNames=teams)
+
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html', teamNames=teams)
+    form = SignupForm() #create the CreatePost form
+    if form.validate_on_submit(): #IF the form was submitted successfully:
+        #Upload the data from the form to the database
+        email=form.email.data
+        username=form.username.data
+        team=teams[int(form.team.data)]
+        password = form.password.data
 
-@app.route('/signup', methods=['POST'])
-def signup_post():
-    # code to validate and add user to database goes here
-    email = request.form.get('email')
-    username = request.form.get('username')
-    teamNum = int(request.form.get('team'))
-    password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
+        user = models.User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
+        if user: # if a user is found, we want to redirect back to signup page so user can try again
+            flash('Email address already exists')
+            app.logger.warning('Email address already exists: %s', email)
+            return redirect(url_for('signup'))
 
-    user = models.User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
-    if user: # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
-        return redirect(url_for('signup'))
+        # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+        new_user = models.User(email=email, username=username, password=generate_password_hash(password, method='sha256'), team=team)
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
 
-    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_user = models.User(email=email, username=username, password=generate_password_hash(password, method='sha256'), team=teams[teamNum])
+        login_user(new_user, remember=False)
+        app.logger.info('%s signed up successfully', username)
+        flash('Signed up successfully')
+        return redirect(url_for('home'))
 
-    # add the new user to the database
-    db.session.add(new_user)
-    db.session.commit()
+        # if the above check passes, then we know the user has the right credentials
+    return render_template('signup.html', title='signup', form=form)
 
-    login_user(new_user)
-    return redirect(url_for('home'))
 
 @app.route('/createPost', methods=['GET', 'POST'])
 def createPost():
@@ -204,6 +220,7 @@ def createPost():
         db.session.add(p) 
         db.session.commit()
         flash('Succesfully created new post') #Display a success message
+        app.logger.info('Created new post')
         return redirect(url_for('home')) #Redirect the user to the homepage
 
     #ELSE render the createPost.html template
@@ -227,31 +244,52 @@ def friends():
         user_id=key[1:]
         if(code == "r"):
             friendRemoved = models.User.query.get(int(user_id)) #Query this ID
-            print("friendRemoved:",friendRemoved)
+            app.logger.info('Friend removed: %s', friendRemoved)
             current_user.friends.remove(friendRemoved)
             friendRemoved.friends.remove(current_user)
             flash('Succesfully removed friend') #Display a success message
         elif(code == "a"):
             friendAdded = models.User.query.get(int(user_id)) #Query this ID
-            print("friendAdded:",friendAdded)
+            app.logger.info('Friend added: %s', friendAdded)
             current_user.friends.append(friendAdded)
             friendAdded.friends.append(current_user)
             flash('Succesfully added new friend') #Display a success message
 
         db.session.commit() #Commit changes
-
         return redirect(url_for('friends'))
 
     #Render the uncompleteAssessments.html template
     return render_template('friends.html', friends=friends, users=final_users)
+
+@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+def viewProfile(username):
+    if request.method == 'POST': #If a POST request has been sent, i.e. a 'Mark as Completed' button has been pressed:
+        key = list(request.form.keys())[0] #retrieve the key from the request Dict (the ID of the button which was clicked)
+        code=key[0]
+        user_id=key[1:]
+        if(code == "r"):
+            friendRemoved = models.User.query.get(int(user_id)) #Query this ID
+            app.logger.info('Friend removed: %s', friendRemoved)
+            current_user.friends.remove(friendRemoved)
+            friendRemoved.friends.remove(current_user)
+            flash('Succesfully removed friend') #Display a success message
+        elif(code == "a"):
+            friendAdded = models.User.query.get(int(user_id)) #Query this ID
+            app.logger.info('Friend added: %s', friendAdded)
+            current_user.friends.append(friendAdded)
+            friendAdded.friends.append(current_user)
+            flash('Succesfully added new friend') #Display a success message
+
+        db.session.commit() #Commit changes
+        return redirect(url_for('viewProfile', username=username))
+
+    app.logger.info('Viewing %s\'s profile', username)
+    user = models.User.query.filter(models.User.username == username).first() #Query this ID
+    isFriend = current_user in user.friends
+    return render_template('viewProfile.html', user=user, posts=user.posts, isFriend=isFriend)
 
 #Function to clear the contents of the Assessment database
 def clearDatabase():
     models.Post.query.delete()
     models.User.query.delete()
     db.session.commit()
-
-@app.route('/viewProfile/<username>')
-def viewProfile(username):
-    user = models.User.query.filter(models.User.username == username).first() #Query this ID
-    return render_template('viewProfile.html', user=user, posts=user.posts)

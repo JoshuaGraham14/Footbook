@@ -16,12 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         {
                             if(button.name == "like")
                             {
-                                // document.getElementById(button.id).innerHTML = "Likes: " + value;
-                                // document.getElementById(button.id).innerHTML = html(<i class="far fa-thumbs-up"></i>) + value;
                                 document.getElementById(button.id).className = "btn btn-success";
-                                document.getElementById(button.id).innerHTML = '<i class="'+"far fa-thumbs-up"+'"<i/> ' + value;
-                                // document.getElementById(button.id).innerHTML = '<button class="'+"btn btn-light"+' name="like'+value+'" id="'+button.id+'"><i class="'+"far fa-thumbs-up"+'"<i/> ' + value + '</button>';
-                            }
+                                document.getElementById(button.id).innerHTML = '<i class="'+"far fa-thumbs-up"+'"<i/> ' + value;                            }
                             else
                             {
                                 document.getElementById(button.id).className = "btn btn-danger";

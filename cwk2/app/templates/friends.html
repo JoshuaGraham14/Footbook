@@ -11,21 +11,21 @@
 
 <h3>My Friends</h3>
 <table class = "table table-sm">
-{% for a in friends %} <!--Loop through each item in users-->
+{% for friend in friends %} <!--Loop through each item in users-->
 <thead class = "table-light">
     <th></th>
     <tr>
-        <td><b>{{a.username}}</b></td> <!--Display title (in bold)-->
+        <td><b><a href="/viewProfile/{{friend.username}}">{{friend.username}}</a></b></td> <!--Display title (in bold)-->
     </tr>
     <tr>
-        <td>Team: {{a.team}}</td> <!--Display module code-->
+        <td>Team: {{friend.team}}</td> <!--Display module code-->
     </tr>
     <tr>
         <td>
             <!--Create form-->
-            <form action="" method="post" name="removeFriend{{a.id}}">
+            <form action="" method="post" name="removeFriend{{friend.id}}">
                 <!--Create 'Mark as Complete' button-->
-                <input type="submit" class="btn btn-secondary" value="Remove Friend" name="r{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+                <input type="submit" class="btn btn-secondary" value="Remove Friend" name="r{{friend.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
             </form>
         </td>
     </tr>
@@ -35,21 +35,21 @@
 
 <h3>Add Friends</h3>
 <table class = "table table-sm">
-{% for a in users %} <!--Loop through each item in users-->
+{% for user in users %} <!--Loop through each item in users-->
 <thead class = "table-light">
     <th></th>
     <tr>
-        <td><b>{{a.username}}</b></td> <!--Display title (in bold)-->
+        <td><b><a href="/viewProfile/{{user.username}}">{{user.username}}</a></b></td> <!--Display title (in bold)-->
     </tr>
     <tr>
-        <td>Team: {{a.team}}</td> <!--Display module code-->
+        <td>Team: {{user.team}}</td> <!--Display module code-->
     </tr>
     <tr>
         <td>
             <!--Create form-->
-            <form action="" method="post" name="addFriend{{a.id}}">
+            <form action="" method="post" name="addFriend{{user.id}}">
                 <!--Create 'Mark as Complete' button-->
-                <input type="submit" class="btn btn-primary" value="Add Friend" name="a{{a.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+                <input type="submit" class="btn btn-primary" value="Add Friend" name="a{{user.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
             </form>
         </td>
     </tr>
