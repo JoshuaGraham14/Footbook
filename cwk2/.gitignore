@@ -1,2 +1,5 @@
 app.db
 migrations
+.DS_Store
+__pycache__
+.pycache
