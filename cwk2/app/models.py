@@ -35,7 +35,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True) #primary key 
     title = db.Column(db.String(200), nullable=False) #string max char length 200
     description = db.Column(db.String(1000), nullable=False) #string max char length 1000
-    # timePosted = db.Column(db.DataTime, nullable=False) #DateTime data type
+    dateTimePosted = db.Column(db.DateTime, nullable=False) #DateTime data type
     # likes = db.Column(db.Integer, default=0) #Boolean data type
     # dislikes = db.Column(db.Integer, default=0) #Boolean data type
     likes = db.relationship('User', secondary=Likes, backref='liked')

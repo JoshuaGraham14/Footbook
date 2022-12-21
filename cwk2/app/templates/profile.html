@@ -25,6 +25,9 @@
             <td>{{post.description}}</td> <!--Display description-->
         </tr>
         <tr>
+            <td><i>~ {{post.dateTimePosted.strftime("%d/%m/%y - %H:%M")}}</i></td> <!--Display description-->
+        </tr>
+        <tr>
             <td>
                 {% if post not in current_user.liked %}
                 <button class="btn btn-light" name="like" value={{post.id}} id=like{{post.id}}><i class="far fa-thumbs-up"></i> {{(post.likes| length)}} </button>

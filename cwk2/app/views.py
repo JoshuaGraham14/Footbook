@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db, admin, models
-import datetime
+from datetime import datetime
 from .forms import CreatePostForm, LoginForm, SignupForm, ChangePasswordForm ,teams
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -29,10 +29,10 @@ def home():
     # print("filterSelection:",filterSelection, " filterSelectionText:",filterSelectionText)
     print("is_anonymous", current_user.is_anonymous)
     
-    posts = models.Post.query.all()
+    posts = models.Post.query.order_by(models.Post.dateTimePosted.desc()).all()
     if not current_user.is_anonymous:
         if(filterSelection==1):
-            posts = models.Post.query.all()
+            posts = models.Post.query.order_by(models.Post.dateTimePosted.desc()).all()
         elif(filterSelection==2):
             posts = models.Post.query.all()
             friends = current_user.friends
@@ -41,6 +41,8 @@ def home():
                 if(current_user in post.user.friends):
                     friends_posts.append(post)
             posts=friends_posts
+            posts.reverse()
+
         elif(filterSelection==3):
             posts = models.Post.query.all()
             team_posts = []
@@ -48,6 +50,7 @@ def home():
                 if(current_user.team in post.user.team):
                     team_posts.append(post)
             posts=team_posts
+            posts.reverse()
         app.logger.info('selected filter: "%s"', filterSelectionText)
 
     # print("posts:", posts)
@@ -58,35 +61,6 @@ def home():
     #     print(post.user)
     
     return render_template('home.html', posts=posts, current_user=current_user, filterSelectionText=filterSelectionText)
-
-@app.route('/changePassword', methods=['GET', 'POST'])
-def changePassword():
-    form = ChangePasswordForm() #create the CreatePost form
-    if form.validate_on_submit(): #IF the form was submitted successfully:
-        #Upload the data from the form to the database
-        oldPassword = form.oldPassword.data
-        newPassword = form.newPassword.data
-
-        if not check_password_hash(current_user.password, oldPassword):
-            flash('Incorrect password. Try again.')
-            app.logger.warning('Incorrect password')
-            return redirect(url_for('changePassword')) # if the user doesn't exist or password is wrong, reload the page
-        
-        if oldPassword==newPassword:
-            flash('Cannot reuse the same password. Try again.')
-            app.logger.warning('Cannot reuse the same password')
-            return redirect(url_for('changePassword')) # if the user doesn't exist or password is wrong, reload the page
-
-        # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-        current_user.password = generate_password_hash(newPassword, method='sha256')
-        db.session.commit()
-
-        app.logger.info('%s password updated successfully', current_user.username)
-        flash('Password updated successfully.')
-        return redirect(url_for('home'))
-
-        # if the above check passes, then we know the user has the right credentials
-    return render_template('changePassword.html', title='changePassword', form=form)
     
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -105,7 +79,7 @@ def profile():
         else:
             return redirect(url_for('changePassword'))
     
-    posts = models.Post.query.filter_by(user=current_user)
+    posts = models.Post.query.filter_by(user=current_user).order_by(models.Post.dateTimePosted.desc()).limit(10)
 
     return render_template('profile.html', username=current_user.username, posts=posts)
 
@@ -171,15 +145,18 @@ def signup():
         # if the above check passes, then we know the user has the right credentials
     return render_template('signup.html', title='signup', form=form)
 
-
 @app.route('/createPost', methods=['GET', 'POST'])
 @login_required
 def createPost():
     form = CreatePostForm() #create the CreatePost form
     if form.validate_on_submit(): #IF the form was submitted successfully:
         #Upload the data from the form to the database
-        p = models.Post(title=form.title.data,description=form.description.data,user_id=current_user.id)
+
+        # datetime object containing current date and time
+
+        p = models.Post(title=form.title.data,description=form.description.data,dateTimePosted=datetime.now(),user_id=current_user.id)
         #Add and commit the data
+        # print(p.title, p.dateTimePosted, p.dateTimePosted.strftime("%d/%m/%Y %H:%M:%S"))
         db.session.add(p) 
         db.session.commit()
         flash('Succesfully created new post') #Display a success message
@@ -249,8 +226,38 @@ def viewProfile(username):
 
     app.logger.info('Viewing %s\'s profile', username)
     user = models.User.query.filter(models.User.username == username).first() #Query this ID
+    posts = models.Post.query.filter_by(user=user).order_by(models.Post.dateTimePosted.desc()).limit(10)
     isFriend = current_user in user.friends
-    return render_template('viewProfile.html', user=user, posts=user.posts, isFriend=isFriend)
+    return render_template('viewProfile.html', user=user, posts=posts, isFriend=isFriend)
+
+@app.route('/changePassword', methods=['GET', 'POST'])
+def changePassword():
+    form = ChangePasswordForm() #create the CreatePost form
+    if form.validate_on_submit(): #IF the form was submitted successfully:
+        #Upload the data from the form to the database
+        oldPassword = form.oldPassword.data
+        newPassword = form.newPassword.data
+
+        if not check_password_hash(current_user.password, oldPassword):
+            flash('Incorrect password. Try again.')
+            app.logger.warning('Incorrect password')
+            return redirect(url_for('changePassword')) # if the user doesn't exist or password is wrong, reload the page
+        
+        if oldPassword==newPassword:
+            flash('Cannot reuse the same password. Try again.')
+            app.logger.warning('Cannot reuse the same password')
+            return redirect(url_for('changePassword')) # if the user doesn't exist or password is wrong, reload the page
+
+        # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+        current_user.password = generate_password_hash(newPassword, method='sha256')
+        db.session.commit()
+
+        app.logger.info('%s password updated successfully', current_user.username)
+        flash('Password updated successfully.')
+        return redirect(url_for('home'))
+
+        # if the above check passes, then we know the user has the right credentials
+    return render_template('changePassword.html', title='changePassword', form=form)
 
 @app.route("/filter", methods=["POST"])
 def filter():
