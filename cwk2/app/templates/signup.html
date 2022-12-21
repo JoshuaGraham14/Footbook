@@ -20,6 +20,7 @@
 
 <!--Create form:-->
 <form action="" method="post" name="signup">
+    {{ form.csrf_token }}
     {{ form.hidden_tag() }}
 
     <div class="mb-3"> <!--Bottom padding spacing-->
