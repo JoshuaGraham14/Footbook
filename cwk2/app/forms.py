@@ -28,3 +28,8 @@ class SignupForm(FlaskForm):
     team = SelectField('team', choices=list(enumerate(teams)))
     password = PasswordField('password', validators=[DataRequired()])
     passwordConfirm = PasswordField('passwordConfirm', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+
+class ChangePasswordForm(FlaskForm):
+    oldPassword = PasswordField('oldPassword', validators=[DataRequired()])
+    newPassword = PasswordField('newPassword', validators=[DataRequired()])
+    newPasswordConfirm = PasswordField('newPasswordConfirm', validators=[DataRequired(), EqualTo('newPassword', message='New passwords must match')])

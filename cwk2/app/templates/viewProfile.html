@@ -7,19 +7,21 @@
 
 <h6>Favorite Team:<b> {{ user.team }}</b><h6>
 
-{% if not isFriend %}
-<h6>Friend Status:<b> Friends</b></h6>
-<!--Create form-->
-<form action="" method="post" name="addFriend{{user.id}}">
-    <!--Create 'Mark as Complete' button-->
-    <input type="submit" class="btn btn-primary" value="Add Friend" name="a{{user.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
-</form>
-{% else %}
-<h6>Friend Status:<b> Not Friends</b></h6>
-<form action="" method="post" name="removeFriend{{user.id}}">
-    <!--Create 'Mark as Complete' button-->
-    <input type="submit" class="btn btn-secondary" value="Remove Friend" name="r{{user.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
-</form>
+{% if not current_user.is_anonymous %}
+    {% if not isFriend %}
+    <h6>Friend Status:<b> Not Friends</b></h6>
+    <!--Create form-->
+    <form action="" method="post" name="addFriend{{user.id}}">
+        <!--Create 'Mark as Complete' button-->
+        <input type="submit" class="btn btn-primary" value="Add Friend" name="a{{user.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+    </form>
+    {% else %}
+    <h6>Friend Status:<b> Friends</b></h6>
+    <form action="" method="post" name="removeFriend{{user.id}}">
+        <!--Create 'Mark as Complete' button-->
+        <input type="submit" class="btn btn-secondary" value="Remove Friend" name="r{{user.id}}"> <!--Button's name is the user ID - used to determine which button was pressed-->
+    </form>
+    {% endif %}
 {% endif %}
 
 <br></br>

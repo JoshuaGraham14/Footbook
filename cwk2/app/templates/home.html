@@ -9,6 +9,7 @@
 {% endif %}
 {% endwith %}
 
+{% if not current_user.is_anonymous %}
 <h3>Your Feed</h3>
 <div class="btn-group">
     <button class="btn btn-primary dropdown-toggle" id="dropdownbutton-head" value=0 type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -20,6 +21,10 @@
         <button class="dropdown-item" id="dropdownbutton" value=3 type="button">My Team Only</button>
     </div>
 </div>
+{% else %}
+<h3>Feed</h3>
+<h6>Please login for the full Footbook experience</h6>
+{% endif %}
 
 <table class = "table table-sm">
 {% for post in posts %} <!--Loop through each item in posts-->
@@ -38,6 +43,7 @@
         <td>~ Me - {{post.user.team}}</td> <!--Display description-->
         {% endif %}
     </tr>
+    {% if not current_user.is_anonymous %}
     <tr>
         <td>
             {% if post not in current_user.liked %}
@@ -53,6 +59,14 @@
             {% endif %}
         </td>
     </tr>
+    {% else %}
+    <tr>
+        <td>
+            <button class="btn btn-light" name="like" value={{post.id}} id=like{{post.id}} disabled><i class="far fa-thumbs-up"></i> {{(post.likes| length)}} </button>
+            <button class="btn btn-light" name="dislike" value={{post.id}} id=dislike{{post.id}} disabled><i class="far fa-thumbs-down"></i> {{(post.dislikes| length)}} </button>
+        </td>
+    </tr>
+    {% endif %}
 </thead>
 {% endfor %}
 </table>
