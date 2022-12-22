@@ -29,7 +29,6 @@
             {% endif %}
         </ul class="navbar-nav mr-auto">
             {% if current_user.is_authenticated %}
-            <!-- <li class="navbar-text"><a class="nav-link" href="/profile"><i class="far fa-user"></i> Profile</a></li> -->
             <form class="form-inline" action="/profile">
                 <button class="btn btn-success my-2 my-sm-0" type="submit"><i class="far fa-user"></i> Profile</button>
             </form>
@@ -42,8 +41,6 @@
             <form class="form-inline" action="/signup">
                 <button class="btn btn-success my-2 my-sm-0" type="submit">Sign Up</button>
             </form>
-            <!-- <li class="navbar-text"><a class="nav-link" href="/login">Login</a></li> -->
-            <!-- <li class="navbar-text"><a class="nav-link" href="/signup">Sign Up</a></li> -->
             {% endif %}
       </div>
     </nav>

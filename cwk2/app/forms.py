@@ -10,14 +10,11 @@ teams=["Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton & Hove Al
 "Everton", "Fulham", "Leeds United", "Leicester City", "Liverpool", "Manchester City", "Manchester United",
 "Newcastle United", "Nottingham Forest", "Southampton", "Tottenham Hotspur", "West Ham United", "Wolverhampton Wanderers"]
 
-#Create Assessment Form:
-#includes two string fields, Date field and TextArea field:
 class CreatePostForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     description = TextAreaField('description', validators=[DataRequired()])
 
 class LoginForm(FlaskForm):
-    # email = StringField('email', validators=[DataRequired(), Regexp("\w+@{1}\w+", message="Must be a valid email format")])
     email = StringField('email', validators=[DataRequired(), Email(message="Must be a valid email")])
     password = PasswordField('password', validators=[DataRequired()])
     remember = BooleanField('remember')

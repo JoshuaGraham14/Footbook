@@ -38,9 +38,9 @@
     </tr>
     <tr>
         {% if post.user != current_user %}
-        <td><i>~ {{post.dateTimePosted.strftime("%d/%m/%y - %H:%M")}} | <a href="/viewProfile/{{post.user.username}}">{{post.user.username}}</a> ({{post.user.team}})</i></td> <!--Display description-->
+        <td><i>~ {{post.dateTimePosted.strftime("%d/%m/%y - %H:%M")}} | <a href="/viewProfile/{{post.user.username}}">{{post.user.username}}</a> ({{post.user.team}})</i></td>
         {% else %}
-        <td><i>~ {{post.dateTimePosted.strftime("%d/%m/%y - %H:%M")}} | <a href="/profile">Me</a> ({{post.user.team}})</i></td> <!--Display description-->
+        <td><i>~ {{post.dateTimePosted.strftime("%d/%m/%y - %H:%M")}} | <a href="/profile">Me</a> ({{post.user.team}})</i></td>
         {% endif %}
     </tr>
     {% if not current_user.is_anonymous %}

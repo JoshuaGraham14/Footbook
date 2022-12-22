@@ -7,10 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 request.open('POST', `/filter`);
                 request.setRequestHeader("ID", button.value);
                 document.getElementById("dropdownbutton-head").innerHTML = button.textContent+" ";
-                // request.onload = () => {
-                //     const response = request.responseText;
-                    
-                // }; 
+
                 request.send();
                 location.reload();
             }

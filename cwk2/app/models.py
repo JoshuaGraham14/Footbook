@@ -20,7 +20,7 @@ Dislikes = db.Table('Dislikes',
 )
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     username = db.Column(db.String(1000), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
@@ -32,12 +32,10 @@ class User(UserMixin, db.Model):
                     secondaryjoin=Friends.c.user_id2==id)
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True) #primary key 
-    title = db.Column(db.String(200), nullable=False) #string max char length 200
-    description = db.Column(db.String(1000), nullable=False) #string max char length 1000
-    dateTimePosted = db.Column(db.DateTime, nullable=False) #DateTime data type
-    # likes = db.Column(db.Integer, default=0) #Boolean data type
-    # dislikes = db.Column(db.Integer, default=0) #Boolean data type
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
+    dateTimePosted = db.Column(db.DateTime, nullable=False)
     likes = db.relationship('User', secondary=Likes, backref='liked')
     dislikes = db.relationship('User', secondary=Dislikes, backref='disliked')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)

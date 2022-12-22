@@ -15,9 +15,9 @@ def test_new_user():
 
 def test_new_post():
     """
-    GIVEN a User model
-    WHEN a new User is created
-    THEN check the email, hashed_password, and fields are defined correctly
+    GIVEN a Post model
+    WHEN a new Post is created
+    THEN check the title, description, and user_id fields are defined correctly
     """
     post = Post(title='Messi is the GOAT', description='Messi is the greatest player of all time. FULL STOP.', user_id=1)
     assert post.title == 'Messi is the GOAT'
