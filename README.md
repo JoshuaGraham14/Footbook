@@ -31,5 +31,5 @@ Can be visited at: https://joshua1414.pythonanywhere.com (until the expiry on Tu
 ### Signup Page ###
 <img width="1438" alt="Screenshot 2023-01-11 at 15 32 56" src="https://user-images.githubusercontent.com/59918630/211847658-b42f0bd4-025c-4b12-8bdb-1f073712e359.png">
 
-- Passwords are hashed in the database
+- Passwords are stored as hashes in the database
 - Sessions and cookies used to keep a user logged in
